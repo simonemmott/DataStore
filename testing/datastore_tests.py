@@ -63,11 +63,24 @@ class DataStoreTests(TestCase):
         self.assertEqual('1', type1.ref)
         self.assertEqual('Item_1', type1.name)
         self.assertEqual('Item 1', type1.description)
+
+        type1 = refs.get(name='Item_1')
+        self.assertIsNotNone(type1)
+        self.assertEqual('1', type1.ref)
+        self.assertEqual('Item_1', type1.name)
+        self.assertEqual('Item 1', type1.description)
         
         typeA = ds.type('Type2').get('A')
         self.assertEqual('A', typeA.ref)
         self.assertEqual('Item_A', typeA.name)
         self.assertEqual('Item A', typeA.description)
+
+    def test_get_reference_raises_DoesNotExist(self):
+        ds = DataStore('testing/data/reference_types')
+        with self.assertRaises(Type1.DoesNotExist):
+            x = ds.type('Type1').get('X')
+        with self.assertRaises(Type1.DoesNotExist):
+            x = ds.type('Type1').get(name='XXX')
 
     def test_add_reference_raises_DuplicateReference(self):
         ds = DataStore('testing/data/reference_types')
